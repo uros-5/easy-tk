@@ -5,8 +5,6 @@ from easy_tk.TkChild import TkChild
 from easy_tk.TkMaster import TkMaster
 from easy_tk.helpers import new_name
 
-sablon = re.compile(r'(Frame|Entry|Button|Label)(.*)')
-
 class EasyTk(object):
 
     def __init__(self):
@@ -24,7 +22,6 @@ class EasyTk(object):
         child = TkChild(key, self.json_data[key])
         child.master = self.get_master(child.str_master)
         self.add_widget(child.name, child)
-
 
     def add_widgets(self):
         for i in self.json_data:
@@ -44,14 +41,18 @@ class EasyTk(object):
             self.all_widgets[i].screen()
 
     def get_master(self, master):
-        obj = self.all_widgets[master].get()
-        if master not in self.all_masters:
-            tk_master = self.create_master(obj)
-            self.all_masters.setdefault(master,tk_master)
-        return self.all_masters[master]
+        try:
+            obj = self.all_widgets[master].get()
+        except:obj = None
+        finally:
+            if master not in self.all_masters:
+                tk_master = self.create_master(obj)
+                self.all_masters.setdefault(master,tk_master)
+            return self.all_masters[master]
 
     def set_root(self, root):
         child = TkChild("root", {})
+        child.on_screen = True
         child.obj = root
         self.all_widgets.setdefault("root", child)
         self.all_masters.setdefault("root",self.create_master(root))
@@ -66,10 +67,9 @@ class EasyTk(object):
             try:
                 methods = self.all_widgets[i].get_methods()
                 for j in methods:
-                    self.methods[j](self.all_widgets)
-            except Exception as e:
-                print(e)
-                print(i)
+                    self.all_methods[j](self.all_widgets)
+            except IndexError as e:
+                print(f"Method at index[{j}] does not exist. [{i}]")
                 continue
 
     def add_complete_widget(self,dict_easy):
@@ -84,7 +84,7 @@ class EasyTk(object):
         self.modules = modules
 
     def import_methods(self,methods):
-        self.methods = methods
+        self.all_methods = methods
 
     def add_method(self,method):
-        self.methods.append(method)
+        self.all_methods.append(method)

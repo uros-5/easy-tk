@@ -2,12 +2,12 @@ import re
 from tkinter import *
 from tkinter.ttk import Separator
 
-sablon = re.compile(r'(Frame|Entry|Button|Label|Separator|Radiobutton|Canvas|Scrollbar).*')
+modules_re = re.compile(r'(Frame|Entry|Button|Label|Separator|Radiobutton|Canvas|Scrollbar).*')
 
 
 class TkChild(object):
 
-    def __init__(self, name, data,modules=[]):
+    def __init__(self, name, data, modules=[]):
         self.name = name
         self.str_master = data.get("master")
         self.layout = data.get("layout")
@@ -28,6 +28,11 @@ class TkChild(object):
 
     @master.setter
     def master(self, new_master):
+        if type(new_master.obj) == type(None):
+            self.on_screen = True
+            self.method_set_done = True
+            print(f'Master [{self.str_master}] does not exist. [{self.name}] This widget is not created.')
+            return
         self.__master = new_master
         self.create_obj()
 
@@ -69,11 +74,15 @@ class TkChild(object):
         return self.__config
 
     def create_obj(self):
-        obj = sablon.findall(self.name)
+        obj = modules_re.findall(self.name)
         if len(obj) > 0:
             master = self.__master.get()
             exec("self.obj = {}(master)".format(obj[0]))
             master = None
+        else:
+            self.on_screen = True
+            self.method_set_done = True
+            print(f'Provided object ["{self.name}"] is not included in modules list. [{self.name}] This widget is not created.')
 
     def screen(self):
         if self.on_screen == False:
@@ -81,32 +90,56 @@ class TkChild(object):
                 self.set_grid()
                 self.set_config()
                 self.on_screen = True
-            else:
+            elif self.layout == "pack":
                 self.set_pack()
                 self.set_config()
                 self.on_screen = True
+            else:
+                print(f'Layout [{self.layout}] on [{self.name}] does not exist.')
 
     def set_pack(self):
         pack = self.pack
         for i in pack:
-            if type(pack[i]) == str:
-                exec("self.obj.pack({} = '{}')".format(i, pack[i]))
-            else:
-                exec("self.obj.pack({} = {})".format(i, pack[i]))
+            try:
+                if type(pack[i]) == str:
+                    exec("self.obj.pack({} = '{}')".format(i, pack[i]))
+                else:
+                    exec("self.obj.pack({} = {})".format(i, pack[i]))
+            except NameError as e:
+                print(e, f' [{self.name}]')
+                self.set_none()
+                return
+            except Exception:
+                print(f'Wrong attribute [{i}] for pack. [{self.name}] This widget is not created.')
+                self.set_none()
+                return
 
     def set_grid(self):
         grid = self.grid
         for i in grid:
-            exec("self.obj.grid({} = {})".format(i, self.__grid[i]))
+            try:
+                exec("self.obj.grid({} = {})".format(i, self.__grid[i]))
+            except NameError as e:
+                print(e,f' [{self.name}]')
+                self.set_none()
+                return
+            except Exception:
+                print(f'Wrong attribute [{i}] for grid. [{self.name}] This widget is not created.')
+                self.set_none()
+                return
         if self.grid_set_num == 0:
-            if self.new_row == True:
+            if self.new_row in (True,None):
                 self.master.row = True
             self.obj.grid(row=self.master.row, column=self.master.column)
 
     def set_config(self):
         config = self.config
         for i in config:
-            self.obj[i] = config[i]
+            try:
+                self.obj[i] = config[i]
+            except:
+                print(f'Attribute [{i}] is unknown option for config.  [{self.name}]')
+                return
 
     def get(self):
         return self.obj
@@ -117,30 +150,35 @@ class TkChild(object):
             return self.methods
         return []
 
+    def set_none(self):
+        self.obj = 00
+        self.method_set_done = True
+        self.__config = {}
 
-modules = ["Frame","Entry","Button","Label","Separator","Radiobutton","Canvas","Scrollbar"]
+
+modules = ["Frame", "Entry", "Button", "Label", "Separator", "Radiobutton", "Canvas", "Scrollbar"]
+
 def make_modules(list_modules):
-
     def make_module_name(name):
         return name.replace(".", "_")
 
     def make_re():
         modules = ""
         for i in modules:
-            modules+=i+"|"
+            modules += i + "|"
 
         modules = modules[0:-1]
         modules_re = re.compile(r'({}).*'.format(modules))
         return modules_re
 
-    global sablon
+    global modules_re
 
     for i in range(len(list_modules)):
         name = make_module_name(list_modules[i].__name__)
         exec("global {}".format(name))
-        exec("{} = lista[i]".format(name),locals(),globals())
+        exec("{} = lista[i]".format(name), locals(), globals())
         if name not in modules:
             modules.append(name)
 
     if len(list_modules) > 8:
-        sablon = make_re()
+        modules_re = make_re()
