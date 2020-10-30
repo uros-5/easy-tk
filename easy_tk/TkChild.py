@@ -42,14 +42,13 @@ class TkChild(object):
 
     @grid.getter
     def grid(self):
-        if "row" in self.__grid:
-            if self.new_row == True:
-                self.master.row = True
+        if self.new_row in (True, None):
+            self.master.row = True
+        if "row" in self.__grid and "column" not in self.__grid:
             self.grid_set_num = 1
-        if "column" in self.__grid:
-            a = self.master.column
+        if "column" in self.__grid and "row" not in self.__grid:
             self.grid_set_num = 2
-        if "row" and "column" in self.__grid:
+        if "row" in self.__grid and "column" in self.__grid:
             self.grid_set_num = 3
         return self.__grid
 
@@ -128,9 +127,11 @@ class TkChild(object):
                 self.set_none()
                 return
         if self.grid_set_num == 0:
-            if self.new_row in (True,None):
-                self.master.row = True
             self.obj.grid(row=self.master.row, column=self.master.column)
+        elif self.grid_set_num == 1:
+            self.obj.grid(column=0)
+        elif self.grid_set_num == 2:
+            self.obj.grid(row=self.master.row)
 
     def set_config(self):
         config = self.config
@@ -159,26 +160,30 @@ class TkChild(object):
 modules = ["Frame", "Entry", "Button", "Label", "Separator", "Radiobutton", "Canvas", "Scrollbar"]
 
 def make_modules(list_modules):
+    global modules_re
+    global modules
+
     def make_module_name(name):
         return name.replace(".", "_")
 
     def make_re():
-        modules = ""
+        global modules
+        temp_modules = ""
         for i in modules:
-            modules += i + "|"
+            temp_modules += i + "|"
 
-        modules = modules[0:-1]
-        modules_re = re.compile(r'({}).*'.format(modules))
+        temp_modules = temp_modules[0:-1]
+        modules_re = re.compile(f'({temp_modules}).*')
         return modules_re
 
-    global modules_re
+
 
     for i in range(len(list_modules)):
         name = make_module_name(list_modules[i].__name__)
         exec("global {}".format(name))
-        exec("{} = lista[i]".format(name), locals(), globals())
+        exec("{} = list_modules[i]".format(name), locals(), globals())
         if name not in modules:
             modules.append(name)
-
-    if len(list_modules) > 8:
+    if len(list_modules) > 0:
         modules_re = make_re()
+
