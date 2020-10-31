@@ -71,6 +71,13 @@ class EasyTk(object):
             except IndexError as e:
                 print(f"Method at index[{j}] does not exist. [{i}]")
                 continue
+            # except Exception as e:
+            #     print(e)
+            #     print(i)
+            #     print(j)
+            #     print(methods)
+            #     print(self.all_methods)
+            #     continue
 
     def add_complete_widget(self,dict_easy):
         tk_child = dict_easy.get("TkChild")

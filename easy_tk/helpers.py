@@ -1,35 +1,44 @@
-from tkinter import Canvas, Frame, Scrollbar
-import re
+widgets = {}
+class WindowScrollbar(object):
 
-def grid_config_container(widgets):
-    container = widgets.get("FrameContainer").get()
-    container.grid_rowconfigure(0, weight=1)
-    container.grid_columnconfigure(0, weight=1)
+    def __init__(self,easy):
+        global widgets
+        widgets = easy
 
-def canvas_methods(widgets):
-    def _on_mousewheel(event):
-        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+    def set_scrollbar(self,widgets):
+        self.grid_config_container()
+        self.canvas_methods()
+        self.scrollbar_methods()
+        self.frame2_methods()
+    
+    def grid_config_container(self):
+        container = widgets.get("FrameContainer")
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
 
+    def canvas_methods(self):
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    canvas = widgets.get("Canvas").get()
-    scrollbar = widgets.get("Scrollbar").get()
-    frame2 = widgets.get("Frame2").get()
-    canvas.configure(yscrollcommand=scrollbar.set)
-    canvas.create_window((4, 4), window=frame2, anchor="nw",
-                         tags="frame")
-    canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        canvas = widgets.get("Canvas")
+        scrollbar = widgets.get("Scrollbar")
+        frame2 = widgets.get("Frame2")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.create_window((4, 4), window=frame2, anchor="nw",
+                             tags="frame")
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
-def scrollbar_methods(widgets):
-    scrollbar = widgets.get("Scrollbar").get()
-    canvas = widgets.get("Canvas").get()
-    scrollbar["command"] = canvas.yview
+    def scrollbar_methods(self):
+        scrollbar = widgets.get("Scrollbar")
+        canvas = widgets.get("Canvas")
+        scrollbar["command"] = canvas.yview
 
-def frame2_methods(widgets):
-    def onFrameConfigure(event):
-        canvas.configure(scrollregion=canvas.bbox("all"))
-    frame2 = widgets.get("Frame2").get()
-    canvas = widgets.get("Canvas").get()
-    frame2.bind("<Configure>", onFrameConfigure)
+    def frame2_methods(self):
+        def onFrameConfigure(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+        frame2 = widgets.get("Frame2")
+        canvas = widgets.get("Canvas")
+        frame2.bind("<Configure>", onFrameConfigure)
 
 def new_name(name,widgets):
     widgets2 = []
