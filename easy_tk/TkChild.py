@@ -13,6 +13,7 @@ class TkChild(object):
         self.layout = data.get("layout")
         self.__grid = data.get("grid")
         self.__pack = data.get("pack")
+        self.__place = data.get("place")
         self.new_row = data.get("newRow")
         self.__config = data.get("config")
         self.methods = data.get("methods")
@@ -93,6 +94,10 @@ class TkChild(object):
                 self.set_pack()
                 self.set_config()
                 self.on_screen = True
+            elif self.layout == "place":
+                self.set_place()
+                self.set_config()
+                self.on_screen = True
             else:
                 print(f'Layout [{self.layout}] on [{self.name}] does not exist.')
 
@@ -132,6 +137,23 @@ class TkChild(object):
             self.obj.grid(column=0)
         elif self.grid_set_num == 2:
             self.obj.grid(row=self.master.row)
+    
+    def set_place(self):
+        place = self.__place
+        for i in place:
+            try:
+                if type(place[i]) == str:
+                    exec("self.obj.place({} = '{}')".format(i, place[i]))
+                else:
+                    exec("self.obj.place({} = {})".format(i, place[i]))
+            except NameError as e:
+                print(e, f' [{self.name}]')
+                self.set_none()
+                return
+            except Exception:
+                print(f'Wrong attribute [{i}] for place. [{self.name}] This widget is not created.')
+                self.set_none()
+                return
 
     def set_config(self):
         config = self.config
