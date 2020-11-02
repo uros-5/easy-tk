@@ -25,7 +25,7 @@ class WindowScrollbar(object):
         frame2 = widgets.get("Frame2")
         canvas.configure(yscrollcommand=scrollbar.set)
         canvas.create_window((4, 4), window=frame2, anchor="nw",
-                             tags="frame")
+                             tags="frame2")
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
     def scrollbar_methods(self):

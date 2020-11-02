@@ -10,7 +10,7 @@ class EasyTk(object):
     def __init__(self):
         self.all_widgets = {}
         self.all_masters = {}
-        self.all_methods = []
+        self.all_methods = {}
         self.modules = []
 
     def convert_json(self, file_name):
@@ -68,8 +68,8 @@ class EasyTk(object):
                 methods = self.all_widgets[i].get_methods()
                 for j in methods:
                     self.all_methods[j](self.all_widgets)
-            except IndexError as e:
-                print(f"Method at index[{j}] does not exist. [{i}]")
+            except KeyError as e:
+                print(f"Method [{j}] does not exist. [{i}]")
                 continue
             # except Exception as e:
             #     print(e)
@@ -93,5 +93,5 @@ class EasyTk(object):
     def import_methods(self,methods):
         self.all_methods = methods
 
-    def add_method(self,method):
-        self.all_methods.append(method)
+    def add_method(self,name,method):
+        self.all_methods.setdefault(name,method)

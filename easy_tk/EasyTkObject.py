@@ -18,7 +18,7 @@ class EasyTkObject(object):
         elif obj == False:
             return self.easy.all_widgets.get(name)
 
-    def import_methods(self,methods=[]):
+    def import_methods(self,methods={}):
         self.easy.import_methods(methods)
 
     def import_modules(self,modules):
