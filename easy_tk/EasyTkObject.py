@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Tk
 from easy_tk.EasyTk import EasyTk
 
 
@@ -23,6 +23,9 @@ class EasyTkObject(object):
 
     def import_modules(self,modules):
         self.easy.set_modules(modules)
+
+    def import_variables(self,variables):
+        self.easy.import_variables(variables)
 
     def open_file(self,file):
         self.easy.convert_json(file)

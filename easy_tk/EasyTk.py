@@ -11,6 +11,7 @@ class EasyTk(object):
         self.all_widgets = {}
         self.all_masters = {}
         self.all_methods = {}
+        self.all_variables = {}
         self.modules = []
 
     def convert_json(self, file_name):
@@ -25,7 +26,7 @@ class EasyTk(object):
 
     def add_widgets(self):
         for i in self.json_data:
-            child = TkChild(i, self.json_data[i],self.modules)
+            child = TkChild(i, self.json_data[i],self.modules,self.all_variables)
             child.master = self.get_master(child.str_master)
             self.add_widget(child.name, child)
 
@@ -71,13 +72,6 @@ class EasyTk(object):
             except KeyError as e:
                 print(f"Method [{j}] does not exist. [{i}]")
                 continue
-            # except Exception as e:
-            #     print(e)
-            #     print(i)
-            #     print(j)
-            #     print(methods)
-            #     print(self.all_methods)
-            #     continue
 
     def add_complete_widget(self,dict_easy):
         tk_child = dict_easy.get("TkChild")
@@ -92,6 +86,9 @@ class EasyTk(object):
 
     def import_methods(self,methods):
         self.all_methods = methods
+    
+    def import_variables(self,variables={}):
+        self.all_variables = variables
 
     def add_method(self,name,method):
         self.all_methods.setdefault(name,method)

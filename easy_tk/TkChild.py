@@ -3,11 +3,12 @@ from tkinter import *
 from tkinter.ttk import Separator
 
 modules_re = re.compile(r'(Frame|Entry|Button|Label|Separator|Radiobutton|Canvas|Scrollbar).*')
+variable_re = re.compile(r'^var:(\w+$)')
 
 
 class TkChild(object):
 
-    def __init__(self, name, data, modules=[]):
+    def __init__(self, name, data, modules=[],variables={}):
         self.name = name
         self.str_master = data.get("master")
         self.layout = data.get("layout")
@@ -20,6 +21,7 @@ class TkChild(object):
         self.grid_set_num = 0
         self.__master = object
         self.on_screen = False
+        self.all_variables = variables
         self.method_set_done = False
         make_modules(modules)
 
@@ -77,7 +79,7 @@ class TkChild(object):
         obj = modules_re.findall(self.name)
         if len(obj) > 0:
             master = self.__master.get()
-            exec("self.obj = {}(master)".format(obj[0]))
+            exec(f'self.obj = {obj[0]}(master)')
             master = None
         else:
             self.on_screen = True
@@ -106,9 +108,9 @@ class TkChild(object):
         for i in pack:
             try:
                 if type(pack[i]) == str:
-                    exec("self.obj.pack({} = '{}')".format(i, pack[i]))
+                    exec(f"self.obj.pack({i} = '{pack[i]}')")
                 else:
-                    exec("self.obj.pack({} = {})".format(i, pack[i]))
+                    exec(f'self.obj.pack({i} = {pack[i]})')
             except NameError as e:
                 print(e, f' [{self.name}]')
                 self.set_none()
@@ -117,12 +119,13 @@ class TkChild(object):
                 print(f'Wrong attribute [{i}] for pack. [{self.name}] This widget is not created.')
                 self.set_none()
                 return
+        self.obj.pack()
 
     def set_grid(self):
         grid = self.grid
         for i in grid:
             try:
-                exec("self.obj.grid({} = {})".format(i, self.__grid[i]))
+                exec(f'self.obj.grid({i} = {self.__grid[i]})')
             except NameError as e:
                 print(e,f' [{self.name}]')
                 self.set_none()
@@ -143,9 +146,9 @@ class TkChild(object):
         for i in place:
             try:
                 if type(place[i]) == str:
-                    exec("self.obj.place({} = '{}')".format(i, place[i]))
+                    exec(f"self.obj.place({i} = '{place[i]}')")
                 else:
-                    exec("self.obj.place({} = {})".format(i, place[i]))
+                    exec(f'self.obj.place({i} = {place[i]})')
             except NameError as e:
                 print(e, f' [{self.name}]')
                 self.set_none()
@@ -159,7 +162,7 @@ class TkChild(object):
         config = self.config
         for i in config:
             try:
-                self.obj[i] = config[i]
+                self.obj[i] = self.set_variable(config[i])
             except:
                 print(f'Attribute [{i}] is unknown option for config.  [{self.name}]')
                 return
@@ -174,9 +177,17 @@ class TkChild(object):
         return []
 
     def set_none(self):
-        self.obj = 00
+        self.obj = 0
         self.method_set_done = True
         self.__config = {}
+
+    def set_variable(self,value):
+        var = variable_re.findall(value)
+        if len(var) > 0:
+            #input(">>>")
+            return self.all_variables[var[0]]
+        else:
+            return value
 
 
 modules = ["Frame", "Entry", "Button", "Label", "Separator", "Radiobutton", "Canvas", "Scrollbar"]
@@ -198,12 +209,10 @@ def make_modules(list_modules):
         modules_re = re.compile(f'({temp_modules}).*')
         return modules_re
 
-
-
     for i in range(len(list_modules)):
         name = make_module_name(list_modules[i].__name__)
-        exec("global {}".format(name))
-        exec("{} = list_modules[i]".format(name), locals(), globals())
+        exec(f'global {name}')
+        exec(f'{name} = list_modules[i]', locals(), globals())
         if name not in modules:
             modules.append(name)
     if len(list_modules) > 0:

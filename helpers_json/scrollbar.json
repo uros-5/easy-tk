@@ -12,7 +12,7 @@
     "layout": "pack",
     "pack": {"side":"left", "fill":"both", "expand":true},
     "config": {"borderwidth": 1},
-    "methods": [0],
+    "methods": ["set_scrollbar"],
     "newRow": false
   },
   "Scrollbar": {
