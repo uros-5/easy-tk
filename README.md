@@ -18,6 +18,10 @@ pip install tkintertable
 ```
 then install this package.
 
+```
+pip install easy-tk
+```
+
 #### Usage
 
 ##### JSON strucuture:
@@ -27,31 +31,31 @@ then install this package.
 ...,
   "Frame1": {
     "layout": "grid",
-    "methods": [0,1,2],
+    "methods": ["confirm_click","add_click","set.."],
     "master": "FrameContainer",
-    "config": {},
+    "config": {"config_key":"config_value","config_key":"var:something"},
     "grid": {"sticky": "NSEW"},
     "newRow": false
   },...
 }
 ```
-You stat with name of widget,for example:
+You start with name of widget,for example:
 ``Frame1:{...},"LabelUsername":{...},"ButtonConfirm":{...},...``
 
-**layout** - currently you can use grid and pack
+**layout** - you can use grid or pack or place
 ``"layout":"grid"`` or ``"layout:"pack"``
 
-**methods** - inside this list you can include indexes of methods that you will use,this is explained in Python part
+**methods** - inside this list you can include names of methods that you will use,this is explained in Python part
 
 **master** - to which master does this widget belong,be aware of which layout manager is used and that master exists
 
-**config** - for example: ``"config":{"text":"TEST"}``
+**config** - for example: ``"config":{"text":"TEST"}`` or if you imported your variables then just call ```"config":{"some_key":"var:something"}```
 
 **grid** - if you decided to use grid as layout then fill this with proper data,you don't have to include row and column,for example:
 ``"Button1":{...},Button2":{...},Button3":{..., "newRow":true },``
 
-Button1 is on row=0,column=0,Button2 is on row=0,column=1 and Button3 is on _row=1_,column=0.
-But you can also include row and column if you want.
+Button1 is on ```row=0,column=0```,Button2 is on ```row=0,column=1``` and Button3 is on ```_row=1_,column=0```.
+But you can also include row and column if you want. With that in mind,next column is from place where you /didn't/ specified column.
 
 **pack** - if layout is pack then include here attributes,or leave it blank.
 
@@ -84,14 +88,24 @@ Both widgets work. And same applies to grid.
 ```python
 from easy_tk import EasyTkObject
 ```
-This class has all methods you need for "converting" JSON to Tkinter app.EasyTkObject mainly use EasyTk methods but in different way.
+This class has all methods you need for "converting" JSON to Tkinter app. EasyTkObject mainly use EasyTk methods but in different way.
 You can override them.
 
 * ``create_root()``
 * ``get(name,obj=True)``- getting object of one widget if ``obj`` were ``False`` then you will get EasyTkChild object
-* ``import_methods(methods=[])`` - put all your methods in list and use this method
-* ``import_modules(modules=[])`` - put all your modules here,you can include your own widgets,default is this ``["Frame","Entry","Button","Label","Separator","Radiobutton","Canvas","Scrollbar"]``,you can extend it
+* ``import_methods(methods={})`` - put all your methods in dict and then just call that method in json list. ```...,"methods":["on_check_btn","set_style_btns","exit_app",...]```
+* ``import_modules(modules={})`` - put all your modules here,you can include your own widgets,default is this ``["Frame","Entry","Button","Label","Separator","Radiobutton","Canvas","Scrollbar"]``,you can extend it
+* ```import_variables(variables={})``` - include only variables that you need for config,call them with ```"var:some_key"```
 * ``open_file(file)`` - setting your json file EasyTk
-* ``reading_from_json()`` - adding every widget to screen
-*  ``add_just_one(file,key)`` - adding just one widget from json(again be sure that master there exist)
+* ``reading_from_json()`` - adding every widget to screen,applying all config values,calling all methods you included
+*  ``add_just_one(file,key)`` - adding just one widget from json(again be sure that master there exist),for example ```add_just_one("json/test.json","Canvas5")```
 * ``easy_factory()`` - factory for EasyTk object
+
+
+##### Other info
+
+On [github](https://github.com/uros-5/easy-tk) you can find helpers folder,there is shortcut for adding scrollbar in your entire window. In future I will add more of them that you can use.
+
+##### Examples of usage
+
+[football-video-editor-python](https://github.com/uros-5/football-video-editor-python)
