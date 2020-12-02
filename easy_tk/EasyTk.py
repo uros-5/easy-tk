@@ -68,7 +68,10 @@ class EasyTk(object):
             try:
                 methods = self.all_widgets[i].get_methods()
                 for j in methods:
-                    self.all_methods[j](self.all_widgets)
+                    try:
+                        self.all_methods[j]()
+                    except:
+                        self.all_methods[j](self.all_widgets)
             except KeyError as e:
                 print(f"Method [{j}] does not exist. [{i}]")
                 continue

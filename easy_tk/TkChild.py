@@ -217,4 +217,3 @@ def make_modules(list_modules):
             modules.append(name)
     if len(list_modules) > 0:
         modules_re = make_re()
-

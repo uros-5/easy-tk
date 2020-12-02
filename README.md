@@ -109,3 +109,7 @@ On [github](https://github.com/uros-5/easy-tk) you can find helpers folder,there
 ##### Examples of usage
 
 [football-video-editor-python](https://github.com/uros-5/football-video-editor-python)
+
+##### Changes
+
+1.0.6 - you don't have to specify all_widgets parameter in your methods that are connected with json

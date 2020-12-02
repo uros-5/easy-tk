@@ -45,5 +45,5 @@ def new_name(name,widgets):
     for i in widgets:
         if i.startswith(name):
             widgets2.append(i)
-    name2 = "{}_{}".format(name,len(widgets2)+1)
+    name2 = f'{name}_{len(widgets2)+1}'
     return name2
