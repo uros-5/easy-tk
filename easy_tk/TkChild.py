@@ -182,12 +182,14 @@ class TkChild(object):
         self.__config = {}
 
     def set_variable(self,value):
-        var = variable_re.findall(value)
-        if len(var) > 0:
-            #input(">>>")
-            return self.all_variables[var[0]]
-        else:
-            return value
+        if type(value) == type(""): 
+            var = variable_re.findall(value)
+            if len(var) > 0:
+                #input(">>>")
+                return self.all_variables[var[0]]
+            else:
+                return value
+        return value
 
 
 modules = ["Frame", "Entry", "Button", "Label", "Separator", "Radiobutton", "Canvas", "Scrollbar"]

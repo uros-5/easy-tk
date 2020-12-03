@@ -1,5 +1,7 @@
 # **EasyTk** 
 
+[![Downloads](https://pepy.tech/badge/easy-tk)](https://pepy.tech/project/easy-tk)
+
 Create Tkinter applications with help of JSON!
 
 ```python
