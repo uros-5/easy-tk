@@ -5,7 +5,7 @@ class WindowScrollbar(object):
         global widgets
         widgets = easy
 
-    def set_scrollbar(self,widgets):
+    def set_scrollbar(self):
         self.grid_config_container()
         self.canvas_methods()
         self.scrollbar_methods()

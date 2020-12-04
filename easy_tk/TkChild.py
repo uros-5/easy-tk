@@ -108,14 +108,18 @@ class TkChild(object):
         for i in pack:
             try:
                 if type(pack[i]) == str:
-                    exec(f"self.obj.pack({i} = '{pack[i]}')")
+                    variable = self.set_variable(pack[i])
+                    if type(variable) == str:
+                        exec(f"self.obj.pack({i} = '{variable}')")
+                    else:
+                        exec(f"self.obj.pack({i} = {variable})")
                 else:
                     exec(f'self.obj.pack({i} = {pack[i]})')
             except NameError as e:
                 print(e, f' [{self.name}]')
                 self.set_none()
                 return
-            except Exception:
+            except Exception as e:
                 print(f'Wrong attribute [{i}] for pack. [{self.name}] This widget is not created.')
                 self.set_none()
                 return
@@ -125,7 +129,14 @@ class TkChild(object):
         grid = self.grid
         for i in grid:
             try:
-                exec(f'self.obj.grid({i} = {self.__grid[i]})')
+                if type(grid[i]) == str:
+                    variable = self.set_variable(grid[i])
+                    if type(variable) == str:
+                        exec(f"self.obj.grid({i} = '{variable}')")
+                    else:
+                        exec(f"self.obj.grid({i} = {variable})")
+                else:
+                    exec(f'self.obj.grid({i} = {grid[i]})')
             except NameError as e:
                 print(e,f' [{self.name}]')
                 self.set_none()
@@ -146,7 +157,11 @@ class TkChild(object):
         for i in place:
             try:
                 if type(place[i]) == str:
-                    exec(f"self.obj.place({i} = '{place[i]}')")
+                    variable = self.set_variable(place[i])
+                    if type(variable) == str:
+                        exec(f"self.obj.place({i} = '{variable}')")
+                    else:
+                        exec(f"self.obj.place({i} = {variable})")
                 else:
                     exec(f'self.obj.place({i} = {place[i]})')
             except NameError as e:
@@ -219,3 +234,4 @@ def make_modules(list_modules):
             modules.append(name)
     if len(list_modules) > 0:
         modules_re = make_re()
+
