@@ -20,7 +20,7 @@ class EasyTk(object):
         file.close()
 
     def load_one(self,key):
-        child = TkChild(key, self.json_data[key])
+        child = TkChild(key, self.json_data[key],self.modules,self.all_variables)
         child.master = self.get_master(child.str_master)
         self.add_widget(child.name, child)
 
