@@ -114,6 +114,11 @@ On [github](https://github.com/uros-5/easy-tk) you can find helpers folder,there
 
 ##### Changes
 
+1.0.6.4 added methods for removing widgets and for changing keys in json before displaying widgets on screen
+
+1.0.6.3 fixed modules error while loading one widget
+
 1.0.6.2 - fixed using variables inside json for grid/pack
+
 1.0.6 - you don't have to specify all_widgets parameter in your methods that are connected with json
 

@@ -1,4 +1,5 @@
 import json
+import ast
 
 from tkinter import *
 from easy_tk.TkChild import TkChild
@@ -47,7 +48,7 @@ class EasyTk(object):
         except:obj = None
         finally:
             if master not in self.all_masters:
-                tk_master = self.create_master(obj)
+                tk_master = self.create_master(obj,master)
                 self.all_masters.setdefault(master,tk_master)
             return self.all_masters[master]
 
@@ -56,11 +57,12 @@ class EasyTk(object):
         child.on_screen = True
         child.obj = root
         self.all_widgets.setdefault("root", child)
-        self.all_masters.setdefault("root",self.create_master(root))
+        self.all_masters.setdefault("root",self.create_master(root,'root'))
 
-    def create_master(self,master_obj):
+    def create_master(self,master_obj,name):
         master = TkMaster()
         master.obj = master_obj
+        master.name = name
         return master
 
     def set_methods(self):
@@ -95,3 +97,19 @@ class EasyTk(object):
 
     def add_method(self,name,method):
         self.all_methods.setdefault(name,method)
+
+    def remove_widget(self,name):
+        for child in self.all_widgets:
+            if self.all_widgets[child].master.name == name:
+                self.all_widgets[child].destroy()
+                self.all_widgets.pop(child)
+
+        for master in self.all_masters:
+            if self.all_masters[master].name == name:
+                self.all_masters[master].destroy()
+                self.all_masters.pop(master)
+    
+    def change_frame_key(self,key,new_key):
+        str_json_data = str(self.json_data)
+        str_json_data = str_json_data.replace(key,new_key)
+        self.json_data = ast.literal_eval(str_json_data)
