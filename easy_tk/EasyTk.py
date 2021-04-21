@@ -59,7 +59,7 @@ class EasyTk(object):
         self.all_widgets.setdefault("root", child)
         self.all_masters.setdefault("root",self.create_master(root,'root'))
 
-    def create_master(self,master_obj,name):
+    def create_master(self,master_obj,name=""):
         master = TkMaster()
         master.obj = master_obj
         master.name = name
@@ -98,7 +98,7 @@ class EasyTk(object):
     def add_method(self,name,method):
         self.all_methods.setdefault(name,method)
 
-    def remove_widget(self,name):
+    def remove_widget(self,name=""):
         for child in self.all_widgets:
             if self.all_widgets[child].master.name == name:
                 self.all_widgets[child].destroy()

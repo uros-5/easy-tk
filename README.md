@@ -114,6 +114,8 @@ On [github](https://github.com/uros-5/easy-tk) you can find helpers folder,there
 
 ##### Changes
 
+1.0.7.1 added support for older version in creating master
+
 1.0.6.4 added methods for removing widgets and for changing keys in json before displaying widgets on screen
 
 1.0.6.3 fixed modules error while loading one widget
