@@ -99,17 +99,18 @@ class EasyTk(object):
         self.all_methods.setdefault(name,method)
 
     def remove_widget(self,name=""):
-        for child in self.all_widgets:
-            if self.all_widgets[child].master.name == name:
-                self.all_widgets[child].destroy()
+        for child in list(self.all_widgets.keys()):
+            if child != "root" and self.all_widgets[child].master.name == name:
+                self.all_widgets[child].get().destroy()
                 self.all_widgets.pop(child)
 
-        for master in self.all_masters:
+        for master in list(self.all_masters.keys()):
             if self.all_masters[master].name == name:
-                self.all_masters[master].destroy()
+                self.all_masters[master].get().destroy()
                 self.all_masters.pop(master)
     
     def change_frame_key(self,key,new_key):
         str_json_data = str(self.json_data)
         str_json_data = str_json_data.replace(key,new_key)
         self.json_data = ast.literal_eval(str_json_data)
+
