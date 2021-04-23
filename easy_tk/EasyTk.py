@@ -100,7 +100,7 @@ class EasyTk(object):
 
     def remove_widget(self,name=""):
         for child in list(self.all_widgets.keys()):
-            if child != "root" and self.all_widgets[child].master.name == name:
+            if child != "root" and self.all_widgets[child].master.name == name or child == name:
                 self.all_widgets[child].get().destroy()
                 self.all_widgets.pop(child)
 
